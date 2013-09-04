@@ -1,0 +1,938 @@
+<?xml version="1.0" encoding="utf-16"?>
+<nugget name="CODBAP-0.1.0 REV4">
+ <CLAS CLSNAME="ZCL_CODBAP" VERSION="1" LANGU="E" DESCRIPT="CouchDB API" UUID="E00765CAEEED45F1996A0050568E47CB" CATEGORY="00" EXPOSURE="0" STATE="1" RELEASE="0" AUTHOR="SE38_UWE" CREATEDON="20101107" CHANGEDON="00000000" CHGDANYON="00000000" CLSFINAL="X" CLSCCINCL="X" FIXPT="X" UNICODE="X" R3RELEASE="701" CLSBCCAT="00" DURATION_TYPE="0 " RISK_LEVEL="0 ">
+  <publicSection>class ZCL_CODBAP definition
+  public
+  final
+  create private .
+
+*&quot;* public components of class ZCL_CODBAP
+*&quot;* do not include other source files here!!!
+public section.
+
+  data JSON_DOC type ref to ZCL_JSON_DOCUMENT .
+
+  class-methods GET_API
+    importing
+      !PROTOCOL type STRING default &apos;HTTP&apos;
+      !HOST type STRING
+      !PORT type STRING default &apos;5984&apos;
+      !PROXY_HOST type STRING default SPACE
+      !PROXY_PORT type STRING default SPACE
+      !PROXY_USER type STRING default SPACE
+      !PROXY_PASS type STRING default SPACE
+    returning
+      value(API) type ref to ZCL_CODBAP .
+  methods GET_VERSION
+    returning
+      value(VERSION) type STRING
+    raising
+      ZCX_CODBAP_ERROR .
+  methods CREATE_DB
+    importing
+      !DBNAME type STRING
+    raising
+      ZCX_CODBAP_ERROR .
+  methods PUT_DOC
+    importing
+      !DBNAME type STRING
+      !FOLDER type STRING optional
+      !ID_IN type STRING optional
+      !REV_IN type STRING optional
+      !JSON type STRING
+    exporting
+      !ID_OUT type STRING
+      !REV_OUT type STRING
+    raising
+      ZCX_CODBAP_ERROR .
+  methods CREATE_DESIGN_DOC
+    importing
+      !DBNAME type STRING
+      !FOLDER type STRING
+      !VIEWNAME type STRING
+      !MAP_FUNCTION type STRING
+      !REDUCE_FUNCTION type STRING optional
+      !OTHER_FUNCTION type STRING optional
+    exporting
+      !ID_OUT type STRING
+      !REV_OUT type STRING
+    raising
+      ZCX_CODBAP_ERROR .
+  methods GET_VIEW_DATA
+    importing
+      !DBNAME type STRING
+      !FOLDER type STRING
+      !VIEWNAME type STRING
+      !KEY type STRING optional
+      !STARTKEY type STRING optional
+      !ENDKEY type STRING optional
+      !GROUP_LEVEL type STRING optional
+    raising
+      ZCX_CODBAP_ERROR .</publicSection>
+  <protectedSection>*&quot;* protected components of class ZCL_CODBAP
+*&quot;* do not include other source files here!!!
+protected section.</protectedSection>
+  <privateSection>*&quot;* private components of class ZCL_CODBAP
+*&quot;* do not include other source files here!!!
+private section.
+
+  data HTTP_CLIENT type ref to IF_HTTP_CLIENT .
+
+  methods FETCHURL
+    importing
+      !URI type STRING optional
+      !METHOD type STRING default &apos;GET&apos;
+      !USERNAME type STRING default SPACE
+      !PASSWORD type STRING default SPACE
+      !BODY type STRING optional
+    raising
+      ZCX_CODBAP_ERROR .
+  methods GET_GUID
+    returning
+      value(GUID) type STRING .</privateSection>
+  <localImplementation>*&quot;* local class implementation for public class
+*&quot;* use this source file for the implementation part of
+*&quot;* local helper classes</localImplementation>
+  <localTypes>*&quot;* use this source file for any type declarations (class
+*&quot;* definitions, interfaces or data types) you need for method
+*&quot;* implementation or private method&apos;s signature</localTypes>
+  <localMacros>*&quot;* use this source file for any macro definitions you need
+*&quot;* in the implementation part of the class</localMacros>
+  <attribute CLSNAME="ZCL_CODBAP" CMPNAME="HTTP_CLIENT" VERSION="1" LANGU="E" DESCRIPT="HTTP client" EXPOSURE="0" STATE="1" EDITORDER="2 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDBY="D031669" CHANGEDON="20101214" ATTDECLTYP="0" ATTEXPVIRT="0" TYPTYPE="3" TYPE="IF_HTTP_CLIENT" SRCROW1="0 " SRCCOLUMN1="0 " SRCROW2="0 " SRCCOLUMN2="0 " R3RELEASE="701" TYPESRC_LENG="0 "/>
+  <attribute CLSNAME="ZCL_CODBAP" CMPNAME="JSON_DOC" VERSION="1" LANGU="E" DESCRIPT="JSON Document" EXPOSURE="2" STATE="1" EDITORDER="1 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDBY="D031669" CHANGEDON="20101214" ATTDECLTYP="0" ATTEXPVIRT="0" TYPTYPE="3" TYPE="ZCL_JSON_DOCUMENT" SRCROW1="0 " SRCCOLUMN1="0 " SRCROW2="0 " SRCCOLUMN2="0 " R3RELEASE="701" TYPESRC_LENG="0 "/>
+  <method CLSNAME="ZCL_CODBAP" CMPNAME="CREATE_DB" VERSION="1" LANGU="E" DESCRIPT="Create Database" EXPOSURE="2" STATE="1" EDITORDER="3 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDON="00000000" MTDTYPE="0" MTDDECLTYP="0" MTDNEWEXC="X" R3RELEASE="701" BCMTDCAT="00" BCMTDSYN="0">
+   <parameter CLSNAME="ZCL_CODBAP" CMPNAME="CREATE_DB" SCONAME="DBNAME" VERSION="1" LANGU="E" CMPTYPE="1" MTDTYPE="0" EDITORDER="1 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDON="00000000" PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="STRING"/>
+   <exception CLSNAME="ZCL_CODBAP" CMPNAME="CREATE_DB" SCONAME="ZCX_CODBAP_ERROR" VERSION="1" LANGU="E" DESCRIPT="CoDBap Exception Class" MTDTYPE="0" EDITORDER="1 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDON="00000000"/>
+   <source>method CREATE_DB.
+
+  DATA: uri TYPE string.
+
+  CONCATENATE
+    &apos;/&apos;
+    dbname
+  INTO uri.
+
+  fetchurl( uri = uri method = &apos;PUT&apos; ).
+
+endmethod.</source>
+  </method>
+  <method CLSNAME="ZCL_CODBAP" CMPNAME="CREATE_DESIGN_DOC" VERSION="1" LANGU="E" DESCRIPT="Create design document" EXPOSURE="2" STATE="1" EDITORDER="5 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDON="00000000" MTDTYPE="0" MTDDECLTYP="0" MTDNEWEXC="X" R3RELEASE="701" BCMTDCAT="00" BCMTDSYN="0">
+   <parameter CLSNAME="ZCL_CODBAP" CMPNAME="CREATE_DESIGN_DOC" SCONAME="DBNAME" VERSION="1" LANGU="E" CMPTYPE="1" MTDTYPE="0" EDITORDER="1 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDON="00000000" PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="STRING"/>
+   <parameter CLSNAME="ZCL_CODBAP" CMPNAME="CREATE_DESIGN_DOC" SCONAME="FOLDER" VERSION="1" LANGU="E" CMPTYPE="1" MTDTYPE="0" EDITORDER="2 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDON="00000000" PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="STRING"/>
+   <parameter CLSNAME="ZCL_CODBAP" CMPNAME="CREATE_DESIGN_DOC" SCONAME="VIEWNAME" VERSION="1" LANGU="E" CMPTYPE="1" MTDTYPE="0" EDITORDER="3 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDON="00000000" PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="STRING"/>
+   <parameter CLSNAME="ZCL_CODBAP" CMPNAME="CREATE_DESIGN_DOC" SCONAME="MAP_FUNCTION" VERSION="1" LANGU="E" CMPTYPE="1" MTDTYPE="0" EDITORDER="4 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDON="00000000" PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="STRING"/>
+   <parameter CLSNAME="ZCL_CODBAP" CMPNAME="CREATE_DESIGN_DOC" SCONAME="REDUCE_FUNCTION" VERSION="1" LANGU="E" CMPTYPE="1" MTDTYPE="0" EDITORDER="5 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDON="00000000" PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="STRING" PAROPTIONL="X"/>
+   <parameter CLSNAME="ZCL_CODBAP" CMPNAME="CREATE_DESIGN_DOC" SCONAME="OTHER_FUNCTION" VERSION="1" LANGU="E" CMPTYPE="1" MTDTYPE="0" EDITORDER="6 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDON="00000000" PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="STRING" PAROPTIONL="X"/>
+   <parameter CLSNAME="ZCL_CODBAP" CMPNAME="CREATE_DESIGN_DOC" SCONAME="ID_OUT" VERSION="1" LANGU="E" CMPTYPE="1" MTDTYPE="0" EDITORDER="7 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDON="00000000" PARDECLTYP="1" PARPASSTYP="1" TYPTYPE="1" TYPE="STRING"/>
+   <parameter CLSNAME="ZCL_CODBAP" CMPNAME="CREATE_DESIGN_DOC" SCONAME="REV_OUT" VERSION="1" LANGU="E" CMPTYPE="1" MTDTYPE="0" EDITORDER="8 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDON="00000000" PARDECLTYP="1" PARPASSTYP="1" TYPTYPE="1" TYPE="STRING"/>
+   <exception CLSNAME="ZCL_CODBAP" CMPNAME="CREATE_DESIGN_DOC" SCONAME="ZCX_CODBAP_ERROR" VERSION="1" LANGU="E" DESCRIPT="CoDBap Exception Class" MTDTYPE="0" EDITORDER="1 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDON="00000000"/>
+   <source>method CREATE_DESIGN_DOC.
+
+  DATA: id TYPE string
+      , json TYPE string
+      .
+
+  CONCATENATE
+    &apos;_design/&apos;
+    folder
+  INTO id.
+
+  CONCATENATE
+    &apos;{ &quot;views&quot; : {&apos;
+    &apos;      &quot;&apos; viewname &apos;&quot; : {&apos;
+    &apos;          &quot;map&quot; : &quot;&apos; map_function &apos;&quot;&apos;
+  INTO json.
+
+  IF reduce_function IS NOT INITIAL.
+    CONCATENATE
+      json
+      &apos;,&apos;
+      &apos;&quot;reduce&quot; : &quot;&apos; reduce_function &apos;&quot;&apos;
+    INTO json.
+  ENDIF.
+
+  CONCATENATE
+    json
+    &apos;}}}&apos;
+  INTO json.
+
+  put_doc(
+     EXPORTING dbname  = dbname
+               id_in   = id
+               json    = json
+     IMPORTING id_out  = id_out
+               rev_out = rev_out
+               ).
+
+endmethod.</source>
+  </method>
+  <method CLSNAME="ZCL_CODBAP" CMPNAME="FETCHURL" VERSION="1" LANGU="E" DESCRIPT="Fetch URL" EXPOSURE="0" STATE="1" EDITORDER="1 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDON="00000000" MTDTYPE="0" MTDDECLTYP="0" MTDNEWEXC="X" R3RELEASE="701" BCMTDCAT="00" BCMTDSYN="0">
+   <parameter CLSNAME="ZCL_CODBAP" CMPNAME="FETCHURL" SCONAME="URI" VERSION="1" LANGU="E" DESCRIPT="HTTP URI" CMPTYPE="1" MTDTYPE="0" EDITORDER="1 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDBY="D031669" CHANGEDON="20101214" PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="STRING" PAROPTIONL="X"/>
+   <parameter CLSNAME="ZCL_CODBAP" CMPNAME="FETCHURL" SCONAME="METHOD" VERSION="1" LANGU="E" DESCRIPT="HTTP METHOD" CMPTYPE="1" MTDTYPE="0" EDITORDER="2 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDBY="D031669" CHANGEDON="20101214" PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="STRING" PARVALUE="&apos;GET&apos;"/>
+   <parameter CLSNAME="ZCL_CODBAP" CMPNAME="FETCHURL" SCONAME="USERNAME" VERSION="1" LANGU="E" DESCRIPT="HTTP User ( BASE64 Auth)" CMPTYPE="1" MTDTYPE="0" EDITORDER="3 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDON="00000000" PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="STRING" PARVALUE="SPACE"/>
+   <parameter CLSNAME="ZCL_CODBAP" CMPNAME="FETCHURL" SCONAME="PASSWORD" VERSION="1" LANGU="E" DESCRIPT="HTTP Pass ( BASE64 Auth)" CMPTYPE="1" MTDTYPE="0" EDITORDER="4 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDON="00000000" PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="STRING" PARVALUE="SPACE"/>
+   <parameter CLSNAME="ZCL_CODBAP" CMPNAME="FETCHURL" SCONAME="BODY" VERSION="1" LANGU="E" DESCRIPT="HTTP BODY" CMPTYPE="1" MTDTYPE="0" EDITORDER="5 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDBY="D031669" CHANGEDON="20101214" PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="STRING" PAROPTIONL="X"/>
+   <exception CLSNAME="ZCL_CODBAP" CMPNAME="FETCHURL" SCONAME="ZCX_CODBAP_ERROR" VERSION="1" LANGU="E" DESCRIPT="CoDBap Exception Class" MTDTYPE="0" EDITORDER="1 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDON="00000000"/>
+   <source>METHOD fetchurl.
+
+  DATA:
+     lv_uri                                TYPE                 string,
+     lv_response_data                      TYPE                 string,
+     lv_error                              TYPE                 string,
+     lv_reason                             TYPE                 string.
+
+*##############################################################################
+
+  &quot;Because of a single local HTTP Client the next lines was added:
+  &quot;If no URI supplied, it will request / URI.
+  IF ( uri IS INITIAL ).
+    lv_uri = &apos;/&apos;.
+  ELSE.
+    lv_uri = uri.
+  ENDIF.
+
+  &quot;provide request data
+  http_client-&gt;request-&gt;set_header_field( name = &apos;~request_uri&apos;
+                                          value = lv_uri           ).
+
+  http_client-&gt;request-&gt;set_header_field( name  = &apos;~request_method&apos;
+                                          value = method        ).
+
+  &quot;Authorization against HTTP Server
+  IF ( username IS NOT INITIAL ).
+    CALL METHOD http_client-&gt;authenticate
+      EXPORTING
+        username = username
+        password = password.
+  ENDIF.
+
+  &quot; body add to request
+  IF body IS NOT INITIAL.
+    http_client-&gt;request-&gt;set_cdata( body ).
+  ENDIF.
+
+
+  &quot; send HTTP Request
+  CALL METHOD http_client-&gt;send
+    EXPORTING
+      timeout                    = cl_http_client=&gt;if_http_client~co_timeout_default
+    EXCEPTIONS
+      http_communication_failure = 1
+      http_invalid_state         = 2
+      http_processing_failed     = 3
+      http_invalid_timeout       = 4
+      OTHERS                     = 5.
+  IF ( sy-subrc IS NOT INITIAL ).
+    http_client-&gt;close( ).
+
+    RAISE EXCEPTION TYPE zcx_codbap_error
+      EXPORTING
+        textid = zcx_codbap_error=&gt;http_communication_failure.
+  ENDIF.
+
+
+  &quot;recieve HTTTP Response
+  CALL METHOD http_client-&gt;receive
+    EXCEPTIONS
+      http_communication_failure = 1
+      http_invalid_state         = 2
+      http_processing_failed     = 3
+      OTHERS                     = 4.
+
+  IF ( sy-subrc IS NOT INITIAL ).
+    http_client-&gt;close( ).
+
+    RAISE EXCEPTION TYPE zcx_codbap_error
+      EXPORTING
+        textid = zcx_codbap_error=&gt;http_communication_failure.
+  ENDIF.
+
+  &quot; recieve HTTP response data
+  lv_response_data = http_client-&gt;response-&gt;get_cdata( ).
+  http_client-&gt;close( ).
+
+  &quot;parse JSON in response data
+  json_doc-&gt;set_json( lv_response_data ).
+
+  &quot;*--- check for errors ---*
+  lv_error = json_doc-&gt;get_value( &apos;error&apos; ).
+  IF ( lv_error IS NOT INITIAL ).
+    lv_reason = json_doc-&gt;get_value( &apos;reason&apos; ).
+
+    RAISE EXCEPTION TYPE zcx_codbap_error
+      EXPORTING
+        textid               = zcx_codbap_error=&gt;couchdb_error
+        couchdb_error_text   = lv_error
+        couchdb_error_reason = lv_reason.
+
+  ENDIF.
+
+ENDMETHOD.</source>
+  </method>
+  <method CLSNAME="ZCL_CODBAP" CMPNAME="GET_API" VERSION="1" LANGU="E" DESCRIPT="Get API" EXPOSURE="2" STATE="1" EDITORDER="1 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDON="00000000" MTDTYPE="0" MTDDECLTYP="1" R3RELEASE="701" BCMTDCAT="00" BCMTDSYN="0">
+   <parameter CLSNAME="ZCL_CODBAP" CMPNAME="GET_API" SCONAME="PROTOCOL" VERSION="1" LANGU="E" DESCRIPT="protocol for connetion" CMPTYPE="1" MTDTYPE="0" EDITORDER="1 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDON="00000000" PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="STRING" PARVALUE="&apos;HTTP&apos;"/>
+   <parameter CLSNAME="ZCL_CODBAP" CMPNAME="GET_API" SCONAME="HOST" VERSION="1" LANGU="E" DESCRIPT="Hostname / IP" CMPTYPE="1" MTDTYPE="0" EDITORDER="2 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDBY="D031669" CHANGEDON="20101214" PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="STRING"/>
+   <parameter CLSNAME="ZCL_CODBAP" CMPNAME="GET_API" SCONAME="PORT" VERSION="1" LANGU="E" DESCRIPT="Port" CMPTYPE="1" MTDTYPE="0" EDITORDER="3 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDBY="D031669" CHANGEDON="20101214" PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="STRING" PARVALUE="&apos;5984&apos;"/>
+   <parameter CLSNAME="ZCL_CODBAP" CMPNAME="GET_API" SCONAME="PROXY_HOST" VERSION="1" LANGU="E" DESCRIPT="Hostname / IP (Proxy)" CMPTYPE="1" MTDTYPE="0" EDITORDER="4 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDBY="D031669" CHANGEDON="20101214" PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="STRING" PARVALUE="SPACE"/>
+   <parameter CLSNAME="ZCL_CODBAP" CMPNAME="GET_API" SCONAME="PROXY_PORT" VERSION="1" LANGU="E" DESCRIPT="Port ( Proxy)" CMPTYPE="1" MTDTYPE="0" EDITORDER="5 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDBY="D031669" CHANGEDON="20101214" PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="STRING" PARVALUE="SPACE"/>
+   <parameter CLSNAME="ZCL_CODBAP" CMPNAME="GET_API" SCONAME="PROXY_USER" VERSION="1" LANGU="E" DESCRIPT="User for proxy authentification" CMPTYPE="1" MTDTYPE="0" EDITORDER="6 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDBY="D031669" CHANGEDON="20101214" PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="STRING" PARVALUE="SPACE"/>
+   <parameter CLSNAME="ZCL_CODBAP" CMPNAME="GET_API" SCONAME="PROXY_PASS" VERSION="1" LANGU="E" DESCRIPT="Passwort for proxy authentification" CMPTYPE="1" MTDTYPE="0" EDITORDER="7 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDBY="D031669" CHANGEDON="20101214" PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="STRING" PARVALUE="SPACE"/>
+   <parameter CLSNAME="ZCL_CODBAP" CMPNAME="GET_API" SCONAME="API" VERSION="1" LANGU="E" DESCRIPT="CouchDB API" CMPTYPE="1" MTDTYPE="0" EDITORDER="8 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDBY="D031669" CHANGEDON="20101214" PARDECLTYP="3" PARPASSTYP="0" TYPTYPE="3" TYPE="ZCL_CODBAP"/>
+   <source>METHOD get_api.
+
+  DATA:
+    lv_protocol                        TYPE         string,
+    lv_scheme                          TYPE         i.
+
+*###############################################################################
+
+  &quot;Create own instance of CoDBap
+  CREATE OBJECT api.
+  IF ( api IS BOUND ).
+
+    &quot;Create JSON document instance
+    api-&gt;json_doc = zcl_json_document=&gt;create( ).
+
+    &quot;#3 - A SSL support is required.
+    &quot;Retrieve connection protocol
+    lv_protocol = protocol.
+    TRANSLATE lv_protocol TO UPPER CASE.
+
+    CASE lv_protocol.
+      WHEN &apos;HTTPS&apos;.
+        lv_scheme = cl_http_client=&gt;schemetype_https.
+
+      WHEN &apos;HTTP&apos;.
+        lv_scheme = cl_http_client=&gt;schemetype_http.
+
+      WHEN OTHERS.
+        RAISE EXCEPTION TYPE zcx_codbap_error
+          EXPORTING
+            textid               = zcx_codbap_error=&gt;protocol_not_supported.
+
+    ENDCASE.
+
+    &quot;Create HTTP Client for CouchDB communication
+    CALL METHOD cl_http_client=&gt;create
+      EXPORTING
+        host               = host
+        service            = port
+        proxy_host         = proxy_host           &quot;#2 - A Proxy support is required.
+        proxy_service      = proxy_port           &quot;#2 - A Proxy support is required.
+        scheme             = lv_scheme            &quot;#3 - A SSL support is required.
+        sap_username       = sy-uname
+        sap_client         = sy-mandt
+      IMPORTING
+        client             = api-&gt;http_client
+      EXCEPTIONS
+        argument_not_found = 1
+        plugin_not_active  = 2
+        internal_error     = 3
+        OTHERS             = 4.
+
+    &quot;check all was done
+    IF ( ( sy-subrc         IS NOT INITIAL ) OR
+         ( api-&gt;http_client IS NOT BOUND   ) ).
+
+      RAISE EXCEPTION TYPE zcx_codbap_error
+                EXPORTING
+                  textid               = zcx_codbap_error=&gt;http_communication_failure.
+
+    ENDIF.
+
+    &quot;#2 - A Proxy support is required.
+    &quot;set proxy authorization, if supplied.
+    IF ( proxy_user IS NOT INITIAL ).
+      CALL METHOD api-&gt;http_client-&gt;authenticate
+        EXPORTING
+          proxy_authentication = abap_true
+          username             = proxy_user
+          password             = proxy_pass.
+    ENDIF.
+  ENDIF.
+
+ENDMETHOD.</source>
+  </method>
+  <method CLSNAME="ZCL_CODBAP" CMPNAME="GET_GUID" VERSION="1" LANGU="E" DESCRIPT="Create GUID" EXPOSURE="0" STATE="1" EDITORDER="2 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDON="00000000" MTDTYPE="0" MTDDECLTYP="0" R3RELEASE="701" BCMTDCAT="00" BCMTDSYN="0">
+   <parameter CLSNAME="ZCL_CODBAP" CMPNAME="GET_GUID" SCONAME="GUID" VERSION="1" LANGU="E" CMPTYPE="1" MTDTYPE="0" EDITORDER="1 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDON="00000000" PARDECLTYP="3" PARPASSTYP="0" TYPTYPE="1" TYPE="STRING"/>
+   <source>method GET_GUID.
+
+  DATA: guid_32 TYPE guid_32.
+
+  CALL FUNCTION &apos;GUID_CREATE&apos;
+    IMPORTING
+      ev_guid_32 = guid_32.
+
+  guid = guid_32.
+
+endmethod.</source>
+  </method>
+  <method CLSNAME="ZCL_CODBAP" CMPNAME="GET_VERSION" VERSION="1" LANGU="E" DESCRIPT="Get CouchDB version" EXPOSURE="2" STATE="1" EDITORDER="2 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDON="00000000" MTDTYPE="0" MTDDECLTYP="0" MTDNEWEXC="X" R3RELEASE="701" BCMTDCAT="00" BCMTDSYN="0">
+   <parameter CLSNAME="ZCL_CODBAP" CMPNAME="GET_VERSION" SCONAME="VERSION" VERSION="1" LANGU="E" DESCRIPT="CouchDB version" CMPTYPE="1" MTDTYPE="0" EDITORDER="1 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDON="00000000" PARDECLTYP="3" PARPASSTYP="0" TYPTYPE="1" TYPE="STRING"/>
+   <exception CLSNAME="ZCL_CODBAP" CMPNAME="GET_VERSION" SCONAME="ZCX_CODBAP_ERROR" VERSION="1" LANGU="E" DESCRIPT="CoDBap Exception Class" MTDTYPE="0" EDITORDER="1 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDON="00000000"/>
+   <source>method GET_VERSION.
+
+  fetchurl( ).
+  version = json_doc-&gt;get_value( &apos;version&apos; ).
+
+endmethod.</source>
+  </method>
+  <method CLSNAME="ZCL_CODBAP" CMPNAME="GET_VIEW_DATA" VERSION="1" LANGU="E" DESCRIPT="Get View Data" EXPOSURE="2" STATE="1" EDITORDER="6 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDON="00000000" MTDTYPE="0" MTDDECLTYP="0" MTDNEWEXC="X" R3RELEASE="701" BCMTDCAT="00" BCMTDSYN="0">
+   <parameter CLSNAME="ZCL_CODBAP" CMPNAME="GET_VIEW_DATA" SCONAME="DBNAME" VERSION="1" LANGU="E" CMPTYPE="1" MTDTYPE="0" EDITORDER="1 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDON="00000000" PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="STRING"/>
+   <parameter CLSNAME="ZCL_CODBAP" CMPNAME="GET_VIEW_DATA" SCONAME="FOLDER" VERSION="1" LANGU="E" CMPTYPE="1" MTDTYPE="0" EDITORDER="2 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDON="00000000" PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="STRING"/>
+   <parameter CLSNAME="ZCL_CODBAP" CMPNAME="GET_VIEW_DATA" SCONAME="VIEWNAME" VERSION="1" LANGU="E" CMPTYPE="1" MTDTYPE="0" EDITORDER="3 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDON="00000000" PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="STRING"/>
+   <parameter CLSNAME="ZCL_CODBAP" CMPNAME="GET_VIEW_DATA" SCONAME="KEY" VERSION="1" LANGU="E" CMPTYPE="1" MTDTYPE="0" EDITORDER="4 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDON="00000000" PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="STRING" PAROPTIONL="X"/>
+   <parameter CLSNAME="ZCL_CODBAP" CMPNAME="GET_VIEW_DATA" SCONAME="STARTKEY" VERSION="1" LANGU="E" CMPTYPE="1" MTDTYPE="0" EDITORDER="5 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDON="00000000" PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="STRING" PAROPTIONL="X"/>
+   <parameter CLSNAME="ZCL_CODBAP" CMPNAME="GET_VIEW_DATA" SCONAME="ENDKEY" VERSION="1" LANGU="E" CMPTYPE="1" MTDTYPE="0" EDITORDER="6 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDON="00000000" PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="STRING" PAROPTIONL="X"/>
+   <parameter CLSNAME="ZCL_CODBAP" CMPNAME="GET_VIEW_DATA" SCONAME="GROUP_LEVEL" VERSION="1" LANGU="E" CMPTYPE="1" MTDTYPE="0" EDITORDER="7 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDON="00000000" PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="STRING" PAROPTIONL="X"/>
+   <exception CLSNAME="ZCL_CODBAP" CMPNAME="GET_VIEW_DATA" SCONAME="ZCX_CODBAP_ERROR" VERSION="1" LANGU="E" DESCRIPT="CoDBap Exception Class" MTDTYPE="0" EDITORDER="1 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDON="00000000"/>
+   <source>method GET_VIEW_DATA.
+
+  DATA: uri         TYPE string
+      , total_rows  TYPE i
+      , rows        TYPE string
+      , escaped     TYPE string
+      , key_value_t TYPE TABLE OF zjson_key_value
+      .
+
+  FIELD-SYMBOLS: &lt;key_value&gt; TYPE zjson_key_value.
+
+  CONCATENATE
+    &apos;/&apos;
+    dbname
+    &apos;/_design/&apos;
+    folder
+    &apos;/_view/&apos;
+    viewname
+  INTO uri.
+
+  IF key IS NOT INITIAL.
+    INSERT INITIAL LINE INTO TABLE key_value_t ASSIGNING &lt;key_value&gt;.
+    &lt;key_value&gt;-key = &apos;key&apos;.
+    &lt;key_value&gt;-value = key.
+  ENDIF.
+
+  IF startkey IS NOT INITIAL.
+    INSERT INITIAL LINE INTO TABLE key_value_t ASSIGNING &lt;key_value&gt;.
+    &lt;key_value&gt;-key = &apos;startkey&apos;.
+    &lt;key_value&gt;-value = startkey.
+  ENDIF.
+
+  IF endkey IS NOT INITIAL.
+    INSERT INITIAL LINE INTO TABLE key_value_t ASSIGNING &lt;key_value&gt;.
+    &lt;key_value&gt;-key = &apos;endkey&apos;.
+    &lt;key_value&gt;-value = endkey.
+  ENDIF.
+
+  IF group_level IS NOT INITIAL.
+    INSERT INITIAL LINE INTO TABLE key_value_t ASSIGNING &lt;key_value&gt;.
+    &lt;key_value&gt;-key = &apos;group_level&apos;.
+    &lt;key_value&gt;-value = group_level.
+  ENDIF.
+
+  LOOP AT key_value_t
+    ASSIGNING &lt;key_value&gt;.
+
+    IF sy-tabix = 1.
+      CONCATENATE
+        uri
+        &apos;?&apos;
+      INTO uri.
+    ENDIF.
+
+    CONCATENATE
+      uri
+      &lt;key_value&gt;-key
+      &apos;=&apos;
+      &lt;key_value&gt;-value
+    INTO uri.
+
+    IF sy-tabix &lt;&gt; LINES( key_value_t ).
+      CONCATENATE
+        uri
+        &apos;&amp;&apos;
+      INTO uri.
+    ENDIF.
+
+  ENDLOOP.
+
+  fetchurl( uri = uri ).
+
+endmethod.</source>
+  </method>
+  <method CLSNAME="ZCL_CODBAP" CMPNAME="PUT_DOC" VERSION="1" LANGU="E" DESCRIPT="Create / Change Document" EXPOSURE="2" STATE="1" EDITORDER="4 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDON="00000000" MTDTYPE="0" MTDDECLTYP="0" MTDNEWEXC="X" R3RELEASE="701" BCMTDCAT="00" BCMTDSYN="0">
+   <parameter CLSNAME="ZCL_CODBAP" CMPNAME="PUT_DOC" SCONAME="DBNAME" VERSION="1" LANGU="E" CMPTYPE="1" MTDTYPE="0" EDITORDER="1 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDON="00000000" PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="STRING"/>
+   <parameter CLSNAME="ZCL_CODBAP" CMPNAME="PUT_DOC" SCONAME="FOLDER" VERSION="1" LANGU="E" CMPTYPE="1" MTDTYPE="0" EDITORDER="2 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDON="00000000" PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="STRING" PAROPTIONL="X"/>
+   <parameter CLSNAME="ZCL_CODBAP" CMPNAME="PUT_DOC" SCONAME="ID_IN" VERSION="1" LANGU="E" CMPTYPE="1" MTDTYPE="0" EDITORDER="3 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDON="00000000" PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="STRING" PAROPTIONL="X"/>
+   <parameter CLSNAME="ZCL_CODBAP" CMPNAME="PUT_DOC" SCONAME="REV_IN" VERSION="1" LANGU="E" CMPTYPE="1" MTDTYPE="0" EDITORDER="4 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDON="00000000" PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="STRING" PAROPTIONL="X"/>
+   <parameter CLSNAME="ZCL_CODBAP" CMPNAME="PUT_DOC" SCONAME="JSON" VERSION="1" LANGU="E" CMPTYPE="1" MTDTYPE="0" EDITORDER="5 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDON="00000000" PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="STRING"/>
+   <parameter CLSNAME="ZCL_CODBAP" CMPNAME="PUT_DOC" SCONAME="ID_OUT" VERSION="1" LANGU="E" CMPTYPE="1" MTDTYPE="0" EDITORDER="6 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDON="00000000" PARDECLTYP="1" PARPASSTYP="1" TYPTYPE="1" TYPE="STRING"/>
+   <parameter CLSNAME="ZCL_CODBAP" CMPNAME="PUT_DOC" SCONAME="REV_OUT" VERSION="1" LANGU="E" CMPTYPE="1" MTDTYPE="0" EDITORDER="7 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDON="00000000" PARDECLTYP="1" PARPASSTYP="1" TYPTYPE="1" TYPE="STRING"/>
+   <exception CLSNAME="ZCL_CODBAP" CMPNAME="PUT_DOC" SCONAME="ZCX_CODBAP_ERROR" VERSION="1" LANGU="E" DESCRIPT="CoDBap Exception Class" MTDTYPE="0" EDITORDER="1 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDON="00000000"/>
+   <source>method PUT_DOC.
+
+  DATA: uri      TYPE string
+      , id       TYPE string
+      , json_put TYPE string
+      .
+
+  &quot;*--- create id if not given ---*
+  IF id_in IS INITIAL.
+    id = get_guid( ).
+  ELSE.
+    id = id_in.
+  ENDIF.
+
+  json_put = json.
+
+  &quot;*--- revision is given -&gt; change document -&gt; put ID and REV into JSON ---*
+  IF rev_in IS NOT INITIAL.
+
+    REPLACE FIRST OCCURRENCE OF &apos;{&apos; IN json_put WITH ``.
+
+    CONCATENATE
+      &apos;{&apos;
+      &apos;&quot;_id&quot; : &quot;&apos;  id_in  &apos;&quot; ,&apos;
+      &apos;&quot;_rev&quot; : &quot;&apos; rev_in &apos;&quot; ,&apos;
+      json_put
+    INTO json_put.
+
+  ENDIF.
+
+  CONCATENATE
+    &apos;/&apos;
+    dbname
+    &apos;/&apos;
+    id
+  INTO uri.
+
+  IF folder IS NOT INITIAL.
+    CONCATENATE
+      uri
+      &apos;/&apos;
+      folder
+    INTO uri.
+  ENDIF.
+
+  fetchurl( uri = uri method = &apos;PUT&apos; body = json_put ).
+
+  id_out  = json_doc-&gt;get_value( &apos;id&apos; ).
+  rev_out = json_doc-&gt;get_value( &apos;rev&apos; ).
+
+endmethod.</source>
+  </method>
+ </CLAS>
+ <CLAS CLSNAME="ZCX_CODBAP_ERROR" VERSION="1" LANGU="E" DESCRIPT="CoDBap Exception Class" UUID="E00765CAEEED4BF1996A0050568E47CB" CATEGORY="40" EXPOSURE="2" STATE="1" RELEASE="0" AUTHOR="D031669" CREATEDON="20101214" CHANGEDON="00000000" CHGDANYON="00000000" CLSFINAL="X" CLSCCINCL="X" FIXPT="X" UNICODE="X" R3RELEASE="701" CLSBCCAT="00" DURATION_TYPE="0 " RISK_LEVEL="0 " REFCLSNAME="CX_STATIC_CHECK">
+  <implementing CLSNAME="ZCX_CODBAP_ERROR" REFCLSNAME="IF_T100_MESSAGE" VERSION="1" EXPOSURE="2" STATE="1" AUTHOR="D031669" CREATEDON="20101214" CHANGEDON="00000000" RELTYPE="1"/>
+  <publicSection>*----------------------------------------------------------------------*
+*       CLASS ZCX_CODBAP_ERROR  DEFINITIO
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
+CLASS zcx_codbap_error DEFINITION
+  PUBLIC
+  INHERITING FROM cx_static_check
+  FINAL
+  CREATE PUBLIC .
+
+*&quot;* public components of class ZCX_CODBAP_ERROR
+*&quot;* do not include other source files here!!!
+  PUBLIC SECTION.
+
+    INTERFACES if_t100_message .
+
+    CONSTANTS:
+      BEGIN OF http_communication_failure,
+        msgid TYPE symsgid VALUE &apos;ZCODBAP&apos;,
+        msgno TYPE symsgno VALUE &apos;001&apos;,
+        attr1 TYPE scx_attrname VALUE &apos;&apos;,
+        attr2 TYPE scx_attrname VALUE &apos;&apos;,
+        attr3 TYPE scx_attrname VALUE &apos;&apos;,
+        attr4 TYPE scx_attrname VALUE &apos;&apos;,
+      END OF http_communication_failure .
+    CONSTANTS:
+      BEGIN OF couchdb_error,
+        msgid TYPE symsgid VALUE &apos;ZCODBAP&apos;,
+        msgno TYPE symsgno VALUE &apos;002&apos;,
+        attr1 TYPE scx_attrname VALUE &apos;COUCHDB_ERROR_TEXT&apos;,
+        attr2 TYPE scx_attrname VALUE &apos;COUCHDB_ERROR_REASON&apos;,
+        attr3 TYPE scx_attrname VALUE &apos;&apos;,
+        attr4 TYPE scx_attrname VALUE &apos;&apos;,
+      END OF couchdb_error .
+
+    CONSTANTS:
+        BEGIN OF protocol_not_supported,
+          msgid TYPE symsgid VALUE &apos;ZCODBAP&apos;,
+          msgno TYPE symsgno VALUE &apos;003&apos;,
+          attr1 TYPE scx_attrname VALUE &apos;&apos;,
+          attr2 TYPE scx_attrname VALUE &apos;&apos;,
+          attr3 TYPE scx_attrname VALUE &apos;&apos;,
+          attr4 TYPE scx_attrname VALUE &apos;&apos;,
+        END OF protocol_not_supported .
+
+    DATA couchdb_error_text TYPE zcodbap_error_text .
+    DATA couchdb_error_reason TYPE zcodbap_error_reason .
+
+    METHODS constructor
+      IMPORTING
+        !textid LIKE if_t100_message=&gt;t100key OPTIONAL
+        !previous LIKE previous OPTIONAL
+        !couchdb_error_text TYPE zcodbap_error_text OPTIONAL
+        !couchdb_error_reason TYPE zcodbap_error_reason OPTIONAL .</publicSection>
+  <protectedSection>*&quot;* protected components of class ZCX_CODBAP_ERROR
+*&quot;* do not include other source files here!!!
+protected section.</protectedSection>
+  <privateSection>*&quot;* private components of class ZCX_CODBAP_ERROR
+*&quot;* do not include other source files here!!!
+private section.</privateSection>
+  <localImplementation>*&quot;* local class implementation for public class
+*&quot;* use this source file for the implementation part of
+*&quot;* local helper classes</localImplementation>
+  <localTypes>*&quot;* use this source file for any type declarations (class
+*&quot;* definitions, interfaces or data types) you need for method
+*&quot;* implementation or private method&apos;s signature</localTypes>
+  <localMacros>*&quot;* use this source file for any macro definitions you need
+*&quot;* in the implementation part of the class</localMacros>
+  <attribute CLSNAME="ZCX_CODBAP_ERROR" CMPNAME="COUCHDB_ERROR" VERSION="1" LANGU="D" EXPOSURE="2" STATE="1" EDITORDER="2 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDBY="D031669" CHANGEDON="20110104" ATTDECLTYP="2" ATTEXPVIRT="0" TYPTYPE="4" SRCROW1="28 " SRCCOLUMN1="6 " SRCROW2="35 " SRCCOLUMN2="25 " LOCKED="X" TYPESRC_LENG="349 " TYPESRC="BEGIN OF couchdb_error,
+
+        msgid TYPE symsgid VALUE &apos;ZCODBAP&apos;,
+
+        msgno TYPE symsgno VALUE &apos;002&apos;,
+
+        attr1 TYPE scx_attrname VALUE &apos;COUCHDB_ERROR_TEXT&apos;,
+
+        attr2 TYPE scx_attrname VALUE &apos;COUCHDB_ERROR_REASON&apos;,
+
+        attr3 TYPE scx_attrname VALUE &apos;&apos;,
+
+        attr4 TYPE scx_attrname VALUE &apos;&apos;,
+
+      END OF couchdb_error
+
+"/>
+  <attribute CLSNAME="ZCX_CODBAP_ERROR" CMPNAME="COUCHDB_ERROR_REASON" VERSION="1" LANGU="D" DESCRIPT="CoDBap: Error Reason" EXPOSURE="2" STATE="1" EDITORDER="5 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDBY="D031669" CHANGEDON="20110104" ATTDECLTYP="0" ATTEXPVIRT="0" TYPTYPE="1" TYPE="ZCODBAP_ERROR_REASON" SRCROW1="0 " SRCCOLUMN1="0 " SRCROW2="0 " SRCCOLUMN2="0 " TYPESRC_LENG="0 "/>
+  <attribute CLSNAME="ZCX_CODBAP_ERROR" CMPNAME="COUCHDB_ERROR_TEXT" VERSION="1" LANGU="D" DESCRIPT="CoDBap: CouchDB error text" EXPOSURE="2" STATE="1" EDITORDER="4 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDBY="D031669" CHANGEDON="20110104" ATTDECLTYP="0" ATTEXPVIRT="0" TYPTYPE="1" TYPE="ZCODBAP_ERROR_TEXT" SRCROW1="0 " SRCCOLUMN1="0 " SRCROW2="0 " SRCCOLUMN2="0 " TYPESRC_LENG="0 "/>
+  <attribute CLSNAME="ZCX_CODBAP_ERROR" CMPNAME="HTTP_COMMUNICATION_FAILURE" VERSION="1" LANGU="D" EXPOSURE="2" STATE="1" EDITORDER="1 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDBY="D031669" CHANGEDON="20110104" ATTDECLTYP="2" ATTEXPVIRT="0" TYPTYPE="4" SRCROW1="19 " SRCCOLUMN1="6 " SRCROW2="26 " SRCCOLUMN2="38 " LOCKED="X" TYPESRC_LENG="337 " TYPESRC="BEGIN OF http_communication_failure,
+
+        msgid TYPE symsgid VALUE &apos;ZCODBAP&apos;,
+
+        msgno TYPE symsgno VALUE &apos;001&apos;,
+
+        attr1 TYPE scx_attrname VALUE &apos;&apos;,
+
+        attr2 TYPE scx_attrname VALUE &apos;&apos;,
+
+        attr3 TYPE scx_attrname VALUE &apos;&apos;,
+
+        attr4 TYPE scx_attrname VALUE &apos;&apos;,
+
+      END OF http_communication_failure
+
+"/>
+  <attribute CLSNAME="ZCX_CODBAP_ERROR" CMPNAME="PROTOCOL_NOT_SUPPORTED" VERSION="1" LANGU="D" EXPOSURE="2" STATE="1" EDITORDER="3 " AUTHOR="D031669" CREATEDON="20110104" CHANGEDBY="D031669" CHANGEDON="20110104" ATTDECLTYP="2" ATTEXPVIRT="0" TYPTYPE="4" SRCROW1="38 " SRCCOLUMN1="8 " SRCROW2="45 " SRCCOLUMN2="36 " LOCKED="X" TYPESRC_LENG="343 " TYPESRC="BEGIN OF protocol_not_supported,
+
+          msgid TYPE symsgid VALUE &apos;ZCODBAP&apos;,
+
+          msgno TYPE symsgno VALUE &apos;003&apos;,
+
+          attr1 TYPE scx_attrname VALUE &apos;&apos;,
+
+          attr2 TYPE scx_attrname VALUE &apos;&apos;,
+
+          attr3 TYPE scx_attrname VALUE &apos;&apos;,
+
+          attr4 TYPE scx_attrname VALUE &apos;&apos;,
+
+        END OF protocol_not_supported
+
+"/>
+  <inheritance CLSNAME="ZCX_CODBAP_ERROR" REFCLSNAME="CX_STATIC_CHECK" VERSION="1" STATE="1" AUTHOR="D031669" CREATEDON="20101214" CHANGEDON="00000000"/>
+  <method CLSNAME="ZCX_CODBAP_ERROR" CMPNAME="CONSTRUCTOR" VERSION="1" LANGU="D" DESCRIPT="CONSTRUCTOR" EXPOSURE="2" STATE="1" EDITORDER="1 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDBY="D031669" CHANGEDON="20110104" MTDTYPE="2" MTDDECLTYP="0" BCMTDCAT="00" BCMTDSYN="0">
+   <parameter CLSNAME="ZCX_CODBAP_ERROR" CMPNAME="CONSTRUCTOR" SCONAME="TEXTID" VERSION="1" LANGU="D" CMPTYPE="1" MTDTYPE="2" EDITORDER="1 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDBY="D031669" CHANGEDON="20110104" PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="0" TYPE="IF_T100_MESSAGE=&gt;T100KEY" PAROPTIONL="X"/>
+   <parameter CLSNAME="ZCX_CODBAP_ERROR" CMPNAME="CONSTRUCTOR" SCONAME="PREVIOUS" VERSION="1" LANGU="D" CMPTYPE="1" MTDTYPE="2" EDITORDER="2 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDBY="D031669" CHANGEDON="20110104" PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="0" TYPE="PREVIOUS" PAROPTIONL="X"/>
+   <parameter CLSNAME="ZCX_CODBAP_ERROR" CMPNAME="CONSTRUCTOR" SCONAME="COUCHDB_ERROR_TEXT" VERSION="1" LANGU="D" CMPTYPE="1" MTDTYPE="2" EDITORDER="3 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDBY="D031669" CHANGEDON="20110104" PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="ZCODBAP_ERROR_TEXT" PAROPTIONL="X"/>
+   <parameter CLSNAME="ZCX_CODBAP_ERROR" CMPNAME="CONSTRUCTOR" SCONAME="COUCHDB_ERROR_REASON" VERSION="1" LANGU="D" CMPTYPE="1" MTDTYPE="2" EDITORDER="4 " DISPID="0 " AUTHOR="D031669" CREATEDON="20101214" CHANGEDBY="D031669" CHANGEDON="20110104" PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="ZCODBAP_ERROR_REASON" PAROPTIONL="X"/>
+   <source>method CONSTRUCTOR.
+CALL METHOD SUPER-&gt;CONSTRUCTOR
+EXPORTING
+PREVIOUS = PREVIOUS
+.
+me-&gt;COUCHDB_ERROR_TEXT = COUCHDB_ERROR_TEXT .
+me-&gt;COUCHDB_ERROR_REASON = COUCHDB_ERROR_REASON .
+clear me-&gt;textid.
+if textid is initial and ME-&gt;IF_T100_MESSAGE~T100KEY IS INITIAL.
+  IF_T100_MESSAGE~T100KEY = IF_T100_MESSAGE=&gt;DEFAULT_TEXTID.
+else.
+  IF_T100_MESSAGE~T100KEY = TEXTID.
+endif.
+endmethod.</source>
+  </method>
+ </CLAS>
+ <DTEL ROLLNAME="ZCODBAP_ERROR_REASON" ROUTPUTLEN="000000" HEADLEN="06" SCRLEN1="10" SCRLEN2="15" SCRLEN3="20" AUTHCLASS="00" AS4USER="D031669" AS4DATE="20101214" AS4TIME="105240" DTELMASTER="E" DATATYPE="STRG" LENG="000000" DECIMALS="000000" OUTPUTLEN="000000">
+  <tpara/>
+ </DTEL>
+ <DTEL ROLLNAME="ZCODBAP_ERROR_TEXT" ROUTPUTLEN="000000" HEADLEN="05" SCRLEN1="10" SCRLEN2="15" SCRLEN3="20" AUTHCLASS="00" AS4USER="D031669" AS4DATE="20101214" AS4TIME="105243" DTELMASTER="E" DATATYPE="STRG" LENG="000000" DECIMALS="000000" OUTPUTLEN="000000">
+  <tpara/>
+ </DTEL>
+ <MSAG ARBGB="ZCODBAP" MASTERLANG="E" RESPUSER="SE38_UWE" LASTUSER="D031669" LDATE="20110104" LTIME="095808" STEXT="CouchDB API">
+  <t100 SPRSL="D" ARBGB="ZCODBAP" MSGNR="001" TEXT="Fehler in der HTTP Kommunikation."/>
+  <t100 SPRSL="E" ARBGB="ZCODBAP" MSGNR="001" TEXT="HTTP communication failure"/>
+  <t100 SPRSL="D" ARBGB="ZCODBAP" MSGNR="002" TEXT="Fehler in der CouchDB: &amp;1 Grund: &amp;2"/>
+  <t100 SPRSL="D" ARBGB="ZCODBAP" MSGNR="003" TEXT="Protokoll wird nicht unterstützt. (unterstützt wird: HTTP/HTTPS)"/>
+  <t100 SPRSL="E" ARBGB="ZCODBAP" MSGNR="002" TEXT="CouchDB error: &amp;1 reason: &amp;2"/>
+  <t100 SPRSL="E" ARBGB="ZCODBAP" MSGNR="003" TEXT="Protocol is not supported. ( supports HTTP/HTTPS )"/>
+  <t100t SPRSL="E" ARBGB="ZCODBAP" STEXT="CouchDB API"/>
+ </MSAG>
+ <PROG NAME="ZCODBAP_DEMO" VARCL="X" SUBC="1" CNAM="SE38_UWE" CDAT="20101107" UNAM="D031669" UDAT="20101214" VERN="000122" RMAND="001" RLOAD="E" FIXPT="X" SDATE="20110104" STIME="095103" IDATE="20101214" ITIME="105302" UCCHECK="X">
+  <textPool>
+   <language SPRAS="E">
+    <textElement ID="R" ENTRY="CoDBap Demo report" LENGTH="18 "/>
+   </language>
+  </textPool>
+  <source>*&amp;---------------------------------------------------------------------*
+*&amp; Report  ZCODBAP_DEMO
+*&amp;
+*&amp;---------------------------------------------------------------------*
+*&amp;
+*&amp;
+*&amp;---------------------------------------------------------------------*
+
+REPORT  zcodbap_demo.
+
+DATA: codbap        TYPE REF TO zcl_codbap
+    , codbap_error  TYPE REF TO zcx_codbap_error
+    , error_text    TYPE string
+    .
+
+codbap = zcl_codbap=&gt;get_api( &apos;your_couchdb_host_or_ip&apos; ).
+
+**********************************************************************
+* please perform each test separatly ! (star and unstar the lines)   *
+**********************************************************************
+
+*--- Test 1: Get CouchDB Version ------------------------------------*
+DATA: version TYPE string.
+
+TRY.
+    version = codbap-&gt;get_version( ).
+
+  CATCH zcx_codbap_error INTO codbap_error.
+    error_text = codbap_error-&gt;get_text( ).
+    WRITE:/ error_text.
+    RETURN.
+
+ENDTRY.
+
+WRITE:/ version.
+
+*--- Test 2: Create new Database -----------------------------------*
+*TRY.
+*    codbap-&gt;create_db( &apos;spfli&apos; ).
+*
+*  CATCH zcx_codbap_error INTO codbap_error.
+*    error_text = codbap_error-&gt;get_text( ).
+*    WRITE:/ error_text.
+*    RETURN.
+*
+*ENDTRY.
+*
+*WRITE:/ &apos;Ok&apos;.
+
+*--- Test 3: copy SAP table entries to CouchDB ----------------------*
+*DATA: id       TYPE string
+*    , rev      TYPE string
+*    , spfli_t  TYPE TABLE OF spfli
+*    , json     TYPE string
+*    .
+*
+*FIELD-SYMBOLS: &lt;spfli&gt; TYPE spfli.
+*
+*SELECT * FROM spfli
+*  INTO TABLE spfli_t.
+*
+*LOOP AT spfli_t
+*  ASSIGNING &lt;spfli&gt;.
+*
+*  codbap-&gt;json_doc-&gt;set_data( &lt;spfli&gt; ).
+*  json = codbap-&gt;json_doc-&gt;get_json( ).
+*
+*  TRY.
+*      codbap-&gt;put_doc(
+*         EXPORTING dbname  = &apos;spfli&apos;
+*                   json    = json
+*         IMPORTING id_out  = id
+*                   rev_out = rev
+*                   ).
+*
+*    CATCH zcx_codbap_error INTO codbap_error.
+*      error_text = codbap_error-&gt;get_text( ).
+*      WRITE:/ error_text.
+*      RETURN.
+*
+*  ENDTRY.
+*
+*  WRITE:/ &apos;ID :&apos;, id, &apos;Rev :&apos;, rev.
+*
+*ENDLOOP.
+
+*--- Test 4: Change Document ----------------------------------------*
+*DATA: id TYPE string
+*    , rev TYPE string
+*    , spfli TYPE spfli
+*    , json TYPE string
+*    .
+*
+*SELECT SINGLE * FROM spfli
+*  INTO spfli
+*  WHERE carrid = &apos;UA&apos;
+*  AND   connid = &apos;3504&apos;.
+*
+*CHECK sy-subrc = 0.
+*
+*spfli-airpto = &apos;DUS&apos;.
+*spfli-cityto = &apos;DUESSELDORF&apos;.
+*
+*codbap-&gt;json_doc-&gt;set_data( spfli ).
+*json = codbap-&gt;json_doc-&gt;get_json( ).
+*
+*TRY.
+*    codbap-&gt;put_doc(
+*       EXPORTING dbname  = &apos;spfli&apos;
+*                 id_in   = &apos;A77ED94CC573100CE1000000C0A8263A&apos;
+*                 rev_in  = &apos;1-9b92806f09117d71b3497aa8a4707d8b&apos;
+*                 json    = json
+*       IMPORTING id_out  = id
+*                 rev_out = rev
+*                 ).
+*
+*  CATCH zcx_codbap_error INTO codbap_error.
+*    error_text = codbap_error-&gt;get_text( ).
+*    WRITE:/ error_text.
+*    RETURN.
+*
+*ENDTRY.
+*
+*WRITE:/ &apos;ID :&apos;, id, &apos;Rev :&apos;, rev.
+
+*--- Test 5: Create View (map only) ---------------------------------*
+*DATA: id       TYPE string
+*    , rev      TYPE string
+*    .
+*
+*TRY.
+*    codbap-&gt;create_design_doc(
+*       EXPORTING dbname       = &apos;spfli&apos;
+*                 folder       = &apos;test5&apos;
+*                 viewname     = &apos;map_only&apos;
+*                 map_function = &apos;function(doc){ emit(doc.airpfrom, doc.cityfrom) }&apos;
+*       IMPORTING id_out  = id
+*                 rev_out = rev
+*                 ).
+*
+*  CATCH zcx_codbap_error INTO codbap_error.
+*    error_text = codbap_error-&gt;get_text( ).
+*    WRITE:/ error_text.
+*    RETURN.
+*
+*ENDTRY.
+*
+*WRITE:/ &apos;ID :&apos;, id, &apos;Rev :&apos;, rev.
+
+*--- Test 6: Display View Data (map only) ----------------------------*
+*DATA: key TYPE string
+*    , value TYPE string
+*    , rows TYPE string
+*    , row TYPE string
+*    .
+*
+*TRY.
+*    codbap-&gt;get_view_data(
+*      dbname   = &apos;spfli&apos;
+*      folder   = &apos;test5&apos;
+*      viewname = &apos;map_only&apos;
+**      key = &apos;&quot;FRA&quot;&apos;            &quot;&lt;- if set, don&apos;t use start-/endkey
+**      startkey = &apos;&quot;FRA&quot;&apos;
+**      endkey   = &apos;&quot;SFO&quot;&apos;
+*      ).
+*
+*  CATCH zcx_codbap_error INTO codbap_error.
+*    error_text = codbap_error-&gt;get_text( ).
+*    WRITE:/ error_text.
+*    RETURN.
+*
+*ENDTRY.
+*
+*rows = codbap-&gt;json_doc-&gt;get_value( &apos;rows&apos; ).
+*codbap-&gt;json_doc-&gt;set_json( rows ).
+*
+*WHILE codbap-&gt;json_doc-&gt;get_next( ) IS NOT INITIAL.
+*
+*  key = codbap-&gt;json_doc-&gt;get_value( &apos;key&apos; ).
+*  value = codbap-&gt;json_doc-&gt;get_value( &apos;value&apos; ).
+*
+*  WRITE:/ key, value.
+*
+*ENDWHILE.
+
+*--- Test 7: Create View (map and reduce, count entries) ---------------------------------*
+*DATA: id       TYPE string
+*    , rev      TYPE string
+*    .
+*
+*TRY.
+*    codbap-&gt;create_design_doc(
+*       EXPORTING dbname          = &apos;spfli&apos;
+*                 folder          = &apos;test7&apos;
+*                 viewname        = &apos;map_reduce&apos;
+*                 map_function    = &apos;function(doc){ emit([doc.airpfrom,doc.airpto], 1) }&apos;
+*                 reduce_function = &apos;function(keys, values, rereduce){ return sum(values) }&apos;
+*       IMPORTING id_out  = id
+*                 rev_out = rev
+*                 ).
+*
+*  CATCH zcx_codbap_error INTO codbap_error.
+*    error_text = codbap_error-&gt;get_text( ).
+*    WRITE:/ error_text.
+*    RETURN.
+*
+*ENDTRY.
+*
+*WRITE:/ &apos;ID :&apos;, id, &apos;Rev :&apos;, rev.
+
+*--- Test 8: Display View Data (map and reduce) ----------------------*
+*DATA: key TYPE string
+*    , value TYPE string
+*    , rows TYPE string
+*    , row TYPE string
+*    .
+*
+*TRY.
+*    codbap-&gt;get_view_data(
+*      dbname   = &apos;spfli&apos;
+*      folder   = &apos;test7&apos;
+*      viewname = &apos;map_reduce&apos;
+*      startkey = &apos;[&quot;FRA&quot;]&apos;
+*      endkey   = &apos;[&quot;SFO&quot;,&quot;SIN&quot;]&apos;
+*      group_level = &apos;2&apos;
+*      ).
+*
+*  CATCH zcx_codbap_error INTO codbap_error.
+*    error_text = codbap_error-&gt;get_text( ).
+*    WRITE:/ error_text.
+*    RETURN.
+*
+*ENDTRY.
+*
+*rows = codbap-&gt;json_doc-&gt;get_value( &apos;rows&apos; ).
+*codbap-&gt;json_doc-&gt;set_json( rows ).
+*
+*WHILE codbap-&gt;json_doc-&gt;get_next( ) IS NOT INITIAL.
+*
+*  key = codbap-&gt;json_doc-&gt;get_value( &apos;key&apos; ).
+*  value = codbap-&gt;json_doc-&gt;get_value( &apos;value&apos; ).
+*
+*  WRITE:/ key, value.
+*
+*ENDWHILE.</source>
+ </PROG>
+</nugget>
