@@ -16,10 +16,11 @@
 
 *--------------------------------------------------------------------*
 *
-* The JSON document class
+* CoDBap
+* The Couch DB API
 * Copyright (C) 2010 Uwe Fetzer
 *
-* Project home: https://github.com/se38/zJSON
+* Project home: https://github.com/se38/CoDBap
 *
 * Published under Apache License, Version 2.0
 * http://www.apache.org/licenses/LICENSE-2.0.html
