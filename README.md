@@ -9,7 +9,7 @@ The ABAP CouchDB API
 JSON Document Class (see https://cw.sdn.sap.com/cw/groups/zjson )
 
 ## Installation CoDBap
-import Nugget with SAPlink (see https://www.assembla.com/spaces/saplink/wiki)
+import Nugget with [SAPlink](http://www.saplink.org)
  
 ## Installation of CouchDB
 Download and install (works fine on virtual servers)
@@ -27,3 +27,6 @@ Check your installation with http://your_ip_or_host::5984/_utils
  
 ## Usage of CoDBap
 see Wiki ( https://github.com/se38/CoDBap/wiki )
+
+## License
+This software is published under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html)
