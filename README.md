@@ -6,7 +6,7 @@ The ABAP CouchDB API
 * Nugget: NUGG_CODBAP-xxx.nugg
  
 ## Required Packages
-JSON Document Class (see https://cw.sdn.sap.com/cw/groups/zjson )
+JSON Document Class (see https://github.com/se38/zJSON )
 
 ## Installation CoDBap
 import Nugget with [SAPlink](http://www.saplink.org)
